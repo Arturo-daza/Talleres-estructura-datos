@@ -13,6 +13,13 @@ def memoized_count_words(words):
             memo[word] = words.count(word) # Función count, cuenta las ocurrencias de una palabra
     return memo
 
+def search_word_in_documents(word, documents):
+    matching_documents = []
+    for idx, document in enumerate(documents): # la funcion enumerate crea un indice para cada valor de la lista
+        if word in document.lower():
+            matching_documents.append(idx)
+    return matching_documents
+
 def main():
     my_documents = ["La programación en Python es clave para el trabajo con datos",
     "Los programadores en Java tienen un alto interés en pasar a Python",
@@ -95,6 +102,12 @@ def main():
     sorted_words = sorted(word_count.items(), key=lambda x: x[1], reverse=True) #Generación de tupla con la palabra y el recuentoo
     for word, count in sorted_words:
         print(f"{word.ljust(15)} {count}") # alinea a la izquierda en un espacio de 15 caracteres.
+        
+    
+    word_to_search = input("Seleccione palabra a abusar: ").lower() 
+    matching_indices = search_word_in_documents(word_to_search, my_documents)
+    
+    print(f'"{word_to_search}": {matching_indices}')
 
 if __name__ == "__main__":
     main()
