@@ -91,23 +91,39 @@ def main():
     "El diseño de interfaces de usuario es crucial para la experiencia del usuario",
     "La seguridad en el desarrollo es un proceso constante de mitigación de riesgos"] 
     
-    # Combinar todos los documentos en un solo texto
-    combined_text = ' '.join(my_documents)
-    
-    # Preprocesar el texto y contar las ocurrencias de las palabras
-    words = preprocess_text(combined_text)
-    word_count = memoized_count_words(words)
-    
-    # Ordenar y mostrar las palabras más repetidas
-    sorted_words = sorted(word_count.items(), key=lambda x: x[1], reverse=True) #Generación de tupla con la palabra y el recuentoo
-    for word, count in sorted_words:
-        print(f"{word.ljust(15)} {count}") # alinea a la izquierda en un espacio de 15 caracteres.
-        
-    
-    word_to_search = input("Seleccione palabra a abusar: ").lower() 
-    matching_indices = search_word_in_documents(word_to_search, my_documents)
-    
-    print(f'"{word_to_search}": {matching_indices}')
+    while True:
+        print("Menú:")
+        print("1. Contar palabras más repetidas (que se repitan más de diez veces)")
+        print("2. Buscar palabra en documentos")
+        print("3. Salir")
+        choice = input("Seleccione una opción (1/2/3): ")
 
+        if choice == "1":
+            # Combinar todos los documentos en un solo texto
+            combined_text = ' '.join(my_documents)
+
+            # Preprocesar el texto y contar las ocurrencias de las palabras
+            words = preprocess_text(combined_text)
+            word_count = memoized_count_words(words)
+            # Ordenar y mostrar las palabras más repetidas (más de 10 veces)
+            sorted_words = sorted(word_count.items(), key=lambda x: x[1], reverse=True)
+            for word, count in sorted_words:
+                if count > 10:
+                    print(f"{word.ljust(15)} {count}")
+
+        elif choice == "2":
+            word_to_search = input("Seleccione palabra a buscar: ").lower()
+            matching_indices = search_word_in_documents(word_to_search, my_documents)
+            if matching_indices:
+                print(f'"{word_to_search}": {matching_indices}')
+            else:
+                print(f'"{word_to_search}" no se encontró en ningún documento.')
+
+        elif choice == "3":
+            print("Saliendo del programa.")
+            break
+
+        else:
+            print("Opción no válida. Seleccione una opción válida (1/2/3).")
 if __name__ == "__main__":
     main()
