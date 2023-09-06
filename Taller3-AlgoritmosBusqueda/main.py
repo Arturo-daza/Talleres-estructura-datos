@@ -6,12 +6,22 @@ def preprocess_text(text):
     return words # Devolver la lista de palabras
 
 
-def memoized_count_words(words):
+def memoized_count_words_with_stop_words(words):
     memo = {} # Diccionario que sirve como cache
     for word in words: 
         if word not in memo:
             memo[word] = words.count(word) # Función count, cuenta las ocurrencias de una palabra
     return memo
+
+def memoized_count_words_without_stop_words(words, stop_words):
+    memo = {}
+    for word in words:
+        # Excluir palabras de la lista de stop_words
+        if word not in stop_words:
+            if word not in memo:
+                memo[word] = words.count(word)
+    return memo
+
 
 def search_word_in_documents(word, documents):
     matching_documents = []
@@ -91,12 +101,15 @@ def main():
     "El diseño de interfaces de usuario es crucial para la experiencia del usuario",
     "La seguridad en el desarrollo es un proceso constante de mitigación de riesgos"] 
     
+    # Lista de palabras a excluir
+    stop_words = ['de', 'el', 'la', 'en', 'un', 'una', 'para', 'con', 'es', 'y', 'los', 'las', 'por', 'se', 'al', 'del', 'a']
     while True:
         print("Menú:")
-        print("1. Contar palabras más repetidas (que se repitan más de diez veces)")
-        print("2. Buscar palabra en documentos")
-        print("3. Salir")
-        choice = input("Seleccione una opción (1/2/3): ")
+        print("1. Contar palabras más repetidas con stop words")
+        print("2. Contar palabras más repetidas con sin stop words")
+        print("3. Buscar palabra en documentos")
+        print("4. Salir")
+        choice = input("Seleccione una opción (1/2/3/4): ")
 
         if choice == "1":
             # Combinar todos los documentos en un solo texto
@@ -104,14 +117,26 @@ def main():
 
             # Preprocesar el texto y contar las ocurrencias de las palabras
             words = preprocess_text(combined_text)
-            word_count = memoized_count_words(words)
+            word_count = memoized_count_words_with_stop_words(words)
             # Ordenar y mostrar las palabras más repetidas (más de 10 veces)
             sorted_words = sorted(word_count.items(), key=lambda x: x[1], reverse=True)
             for word, count in sorted_words:
                 if count > 10:
                     print(f"{word.ljust(15)} {count}")
-
         elif choice == "2":
+            # Combinar todos los documentos en un solo texto
+            combined_text = ' '.join(my_documents)
+
+            # Preprocesar el texto y contar las ocurrencias de las palabras
+            words = preprocess_text(combined_text)
+            word_count = memoized_count_words_without_stop_words(words, stop_words)
+            # Ordenar y mostrar las palabras más repetidas
+            sorted_words = sorted(word_count.items(), key=lambda x: x[1], reverse=True)
+            for word, count in sorted_words:
+                if count > 2:
+                    print(f"{word.ljust(15)} {count}")
+                
+        elif choice == "3":
             word_to_search = input("Seleccione palabra a buscar: ").lower()
             matching_indices = search_word_in_documents(word_to_search, my_documents)
             if matching_indices:
@@ -119,7 +144,7 @@ def main():
             else:
                 print(f'"{word_to_search}" no se encontró en ningún documento.')
 
-        elif choice == "3":
+        elif choice == "4":
             print("Saliendo del programa.")
             break
 
