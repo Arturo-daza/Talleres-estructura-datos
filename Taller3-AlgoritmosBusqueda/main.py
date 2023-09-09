@@ -1,4 +1,5 @@
 import re
+import time
 
 
 def preprocess_text(text):
@@ -44,7 +45,7 @@ def count_words_in_documents(documents, stop_words, use_stop_words=True):
             print(f"{word.ljust(15)} {count}")
 
 
-def search_word_in_documents(word, documents):
+def  search_word_in_documents(word, documents):
     matching_documents = []
     # la funcion enumerate crea un indice para cada valor de la lista
     for idx, document in enumerate(documents):
@@ -137,20 +138,32 @@ def main():
         choice = input("Seleccione una opción (1/2/3/4): ")
 
         if choice == "1":
+            inicio = time.time()
             count_words_in_documents(my_documents, stop_words, use_stop_words=True)
+            fin = time.time()
+            duracion = fin - inicio
+            print(f"Tiempo de ejecución: {duracion:.6f} segundos")
 
         elif choice == "2":
+            inicio = time.time()
             count_words_in_documents(
                 my_documents, stop_words, use_stop_words=False)
+            fin = time.time()
+            duracion = fin - inicio
+            print(f"Tiempo de ejecución: {duracion:.6f} segundos")
 
         elif choice == "3":
             word_to_search = input("Seleccione palabra a buscar: ").lower()
+            inicio = time.time()
             matching_indices = search_word_in_documents(
                 word_to_search, my_documents)
             if matching_indices:
                 print(f'"{word_to_search}": {matching_indices}')
             else:
                 print(f'"{word_to_search}" no se encontró en ningún documento.')
+            fin = time.time()
+            duracion = fin - inicio
+            print(f"Tiempo de ejecución: {duracion:.6f} segundos")
 
         elif choice == "4":
             print("Saliendo del programa.")
