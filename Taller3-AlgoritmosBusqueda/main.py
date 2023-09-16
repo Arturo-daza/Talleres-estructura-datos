@@ -45,14 +45,24 @@ def count_words_in_documents(documents, stop_words, use_stop_words=True):
             print(f"{word.ljust(15)} {count}")
 
 
-def  search_word_in_documents(word, documents):
-    matching_documents = []
-    # la funcion enumerate crea un indice para cada valor de la lista
+def build_inverted_index(documents):
+    inverted_index = {}
     for idx, document in enumerate(documents):
-        if word in document.lower():
-            matching_documents.append(idx)
-    return matching_documents
+        words = document.lower().split()  # Dividir el documento en palabras
+        for word in words:
+            if word in inverted_index:
+                inverted_index[word].append(idx)  # Agregar el índice del documento
+            else:
+                inverted_index[word] = [idx]  # Crear una nueva entrada en el índice
+    return inverted_index
 
+
+def search_word_in_inverted_index(word, inverted_index):
+    word = word.lower()
+    if word in inverted_index:
+        return inverted_index[word]
+    else:
+        return []
 
 def main():
     my_documents = ["La programación en Python es clave para el trabajo con datos",
@@ -128,6 +138,8 @@ def main():
     # Lista de palabras a excluir
     stop_words = ['de', 'el', 'la', 'en', 'un', 'una', 'para', 'con', 'es', 'y', 'los', 'las', 'por', 'se', 'al', 'del', 'a']
 
+    inverted_index = build_inverted_index(my_documents)
+
 
     while True:
         print("Menú:")
@@ -155,15 +167,14 @@ def main():
         elif choice == "3":
             word_to_search = input("Seleccione palabra a buscar: ").lower()
             inicio = time.time()
-            matching_indices = search_word_in_documents(
-                word_to_search, my_documents)
+            matching_indices = search_word_in_inverted_index(word_to_search, inverted_index)
             if matching_indices:
                 print(f'"{word_to_search}": {matching_indices}')
             else:
                 print(f'"{word_to_search}" no se encontró en ningún documento.')
             fin = time.time()
             duracion = fin - inicio
-            print(f"Tiempo de ejecución: {duracion:.6f} segundos")
+            print(f"Tiempo de ejecución: {duracion:.100f} segundos")
 
         elif choice == "4":
             print("Saliendo del programa.")
